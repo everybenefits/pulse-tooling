@@ -1,0 +1,27 @@
+name: Set packages public
+on: workflow_dispatch
+permissions:
+  packages: write
+  contents: read
+jobs:
+  visibility:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Make tooling packages public
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          for pkg in typescript-config eslint-config; do
+            echo "=== $pkg ==="
+            # Try REST visibility endpoints
+            gh api --method POST "orgs/everybenefits/packages/npm/${pkg}/visibility" -f visibility=public 2>&1 || true
+            gh api --method PATCH "orgs/everybenefits/packages/npm/${pkg}" -f visibility=public 2>&1 || true
+            # GraphQL
+            ID=$(gh api "orgs/everybenefits/packages/npm/${pkg}" --jq .id)
+            echo "id=$ID"
+            NODE_ID=$(gh api graphql -f query='query($owner:String!,$name:String!){organization(login:$owner){packages(first:20,names:[$name]){nodes{id name}}}}' -f owner=everybenefits -f name="$pkg" --jq '.data.organization.packages.nodes[0].id')
+            echo "node=$NODE_ID"
+            gh api graphql -f query='mutation($packageId:ID!,$visibility:PackageVisibility!){updatePackageVisibility(input:{packageId:$packageId,visibility:$visibility}){package{name visibility}}}' -f packageId="$NODE_ID" -f visibility=PUBLIC 2>&1 || true
+            gh api "orgs/everybenefits/packages/npm/${pkg}" --jq '{name,visibility}'
+          done
