@@ -1,0 +1,22 @@
+{
+  "name": "@everybenefits/typescript-config",
+  "version": "0.1.0",
+  "files": [
+    "base.json",
+    "nextjs.json",
+    "library.json"
+  ],
+  "exports": {
+    "./base.json": "./base.json",
+    "./nextjs.json": "./nextjs.json",
+    "./library.json": "./library.json"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/everybenefits/pulse-tooling.git",
+    "directory": "packages/typescript-config"
+  }
+}
