@@ -1,0 +1,48 @@
+name: Link and grant packages
+on: workflow_dispatch
+permissions:
+  packages: write
+  contents: read
+jobs:
+  link:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Link packages to pulse-tooling then grant siblings
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set +e
+          OWNER=everybenefits
+          SRC=pulse-tooling
+          for pkg in typescript-config eslint-config; do
+            echo "===== LINK $pkg -> $SRC ====="
+            # Connect repository to package (singular /repo/)
+            gh api --method PUT "orgs/${OWNER}/packages/npm/${pkg}/repo/${OWNER}/${SRC}"
+            echo "link exit=$?"
+            gh api "orgs/${OWNER}/packages/npm/${pkg}" --jq '{name,repository:.repository.full_name,visibility}'
+          done
+
+          declare -A REPOS=(
+            [pulse-shared]=1384319123
+            [pulse-firebase-web]=1384319158
+            [pulse-sso]=1384319204
+            [pulse-oidc]=1384319249
+            [pulse-chrome]=1384319288
+            [pulse-web]=1384319347
+            [pulse-studio]=1384319381
+            [pulse-admin]=1384319417
+            [pulse-payments]=1384319450
+            [pulse-developers]=1384319481
+            [pulse-legal]=1384319507
+            [pulse-backend]=1384319560
+            [pulse-mobile]=1384319534
+            [pulse-tooling]=1384319319
+            [pulse-ui]=1382527459
+          )
+          for pkg in typescript-config eslint-config; do
+            for repo in "${!REPOS[@]}"; do
+              RID=${REPOS[$repo]}
+              echo "Grant $pkg -> $repo"
+              gh api --method PUT "orgs/${OWNER}/packages/npm/${pkg}/repos/${RID}" && echo OK || echo FAIL
+            done
+          done
