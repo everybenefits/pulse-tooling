@@ -1,0 +1,32 @@
+name: Grant package access
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+permissions:
+  packages: write
+  contents: read
+jobs:
+  grant:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Grant sibling repos read access to tooling packages
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          REPOS=(
+            pulse-shared pulse-firebase-web pulse-sso pulse-oidc pulse-chrome
+            pulse-web pulse-studio pulse-admin pulse-payments pulse-developers
+            pulse-legal pulse-backend pulse-mobile pulse-tooling pulse-ui
+          )
+          for pkg in typescript-config eslint-config; do
+            # Scoped package name in path
+            encoded="%40everybenefits%2F${pkg}"
+            for repo in "${REPOS[@]}"; do
+              echo "Grant $pkg -> $repo"
+              gh api --method PUT \
+                "orgs/everybenefits/packages/npm/${encoded}/repos/everybenefits/${repo}" \
+                && echo "  ok" || echo "  skip/fail"
+            done
+          done
