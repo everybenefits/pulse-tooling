@@ -21,12 +21,10 @@ jobs:
             pulse-legal pulse-backend pulse-mobile pulse-tooling pulse-ui
           )
           for pkg in typescript-config eslint-config; do
-            # Scoped package name in path
-            encoded="%40everybenefits%2F${pkg}"
             for repo in "${REPOS[@]}"; do
               echo "Grant $pkg -> $repo"
               gh api --method PUT \
-                "orgs/everybenefits/packages/npm/${encoded}/repos/everybenefits/${repo}" \
+                "orgs/everybenefits/packages/npm/${pkg}/repos/everybenefits/${repo}" \
                 && echo "  ok" || echo "  skip/fail"
             done
           done
