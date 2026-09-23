@@ -22,9 +22,14 @@ jobs:
           )
           for pkg in typescript-config eslint-config; do
             for repo in "${REPOS[@]}"; do
-              echo "Grant $pkg -> $repo"
+              RID=$(gh api "repos/everybenefits/${repo}" --jq .id)
+              echo "Grant $pkg -> $repo (id=$RID)"
+              # Try both path styles
               gh api --method PUT \
-                "orgs/everybenefits/packages/npm/${pkg}/repos/everybenefits/${repo}" \
-                && echo "  ok" || echo "  skip/fail"
+                "orgs/everybenefits/packages/npm/${pkg}/repos/${RID}" \
+                && echo "  ok repos/id" || echo "  fail repos/id"
+              gh api --method PUT \
+                "orgs/everybenefits/packages/npm/${pkg}/repositories/${RID}" \
+                && echo "  ok repositories/id" || echo "  fail repositories/id"
             done
           done
