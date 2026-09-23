@@ -1,6 +1,6 @@
 {
   "name": "@everybenefits/typescript-config",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "files": [
     "base.json",
     "nextjs.json",
@@ -12,7 +12,8 @@
     "./library.json": "./library.json"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://npm.pkg.github.com",
+    "access": "public"
   },
   "repository": {
     "type": "git",

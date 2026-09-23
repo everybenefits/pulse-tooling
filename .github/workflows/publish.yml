@@ -26,5 +26,5 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          pnpm --filter @everybenefits/typescript-config publish --no-git-checks --access restricted
-          pnpm --filter @everybenefits/eslint-config publish --no-git-checks --access restricted
+          pnpm --filter @everybenefits/typescript-config publish --no-git-checks --access public
+          pnpm --filter @everybenefits/eslint-config publish --no-git-checks --access public
