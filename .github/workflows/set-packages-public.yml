@@ -7,21 +7,20 @@ jobs:
   visibility:
     runs-on: ubuntu-latest
     steps:
-      - name: Make tooling packages public
+      - name: Public visibility
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          set -euo pipefail
+          set +e
           for pkg in typescript-config eslint-config; do
             echo "=== $pkg ==="
-            # Try REST visibility endpoints
-            gh api --method POST "orgs/everybenefits/packages/npm/${pkg}/visibility" -f visibility=public 2>&1 || true
-            gh api --method PATCH "orgs/everybenefits/packages/npm/${pkg}" -f visibility=public 2>&1 || true
-            # GraphQL
-            ID=$(gh api "orgs/everybenefits/packages/npm/${pkg}" --jq .id)
-            echo "id=$ID"
-            NODE_ID=$(gh api graphql -f query='query($owner:String!,$name:String!){organization(login:$owner){packages(first:20,names:[$name]){nodes{id name}}}}' -f owner=everybenefits -f name="$pkg" --jq '.data.organization.packages.nodes[0].id')
-            echo "node=$NODE_ID"
-            gh api graphql -f query='mutation($packageId:ID!,$visibility:PackageVisibility!){updatePackageVisibility(input:{packageId:$packageId,visibility:$visibility}){package{name visibility}}}' -f packageId="$NODE_ID" -f visibility=PUBLIC 2>&1 || true
-            gh api "orgs/everybenefits/packages/npm/${pkg}" --jq '{name,visibility}'
+            # After repo is public, try connecting + visibility
+            gh api --method PUT "orgs/everybenefits/packages/npm/${pkg}/repo/everybenefits/pulse-tooling"
+            # npm unpublish/republish won't help; change via UI alternative:
+            # Use GraphQL UpdatePackage for visibility - try PackageMetadata
+            gh api graphql -f query='
+              mutation {
+                updatePackage(input: {clientMutationId: "1"}) { clientMutationId }
+              }' 2>&1 | head -5
+            gh api "orgs/everybenefits/packages/npm/${pkg}" --jq '{name,visibility,repository:.repository}'
           done
