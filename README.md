@@ -16,8 +16,8 @@ Org-wide engineering standards and shared configs for Every Benefits / Pulse.
 ```
 
 ```bash
-pnpm add -D @everybenefits/eslint-config@github:everybenefits/pulse-tooling#v0.2.0 \
-  @everybenefits/typescript-config@github:everybenefits/pulse-tooling#v0.2.0
+pnpm add -D @everybenefits/eslint-config@github:everybenefits/pulse-tooling#v0.2.1 \
+  @everybenefits/typescript-config@github:everybenefits/pulse-tooling#v0.2.1
 ```
 
 Or pin published packages from GitHub Packages after tagging `v0.2.0`.
