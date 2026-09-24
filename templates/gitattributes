@@ -1,0 +1,10 @@
+* text=auto eol=lf
+
+*.{ts,tsx,js,jsx,mjs,cjs,json,yml,yaml,md,css,scss,html,svg} text
+*.{dart,yaml} text
+*.{png,jpg,jpeg,gif,webp,ico,woff,woff2} binary
+
+# Generated / lockfiles
+pnpm-lock.yaml text -diff
+package-lock.json text -diff
+yarn.lock text -diff

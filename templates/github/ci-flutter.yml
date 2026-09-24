@@ -1,0 +1,18 @@
+# Template: Flutter app CI
+name: CI
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: dart analyze --fatal-infos
+      - run: flutter test
