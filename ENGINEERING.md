@@ -45,6 +45,7 @@ PRs must be green before merge. Prefer small PRs. No force-push to `main`/`maste
 - One capability or one app per repository (see ADR-012 in pulse-web).
 - Do not recreate a multi-app Turborepo monorepo unless an explicit new ADR accepts it.
 - Cross-cutting changes: publish package tag → bump dependents.
+- Domain User / Org / Roles: apps depend on `@everybenefits/client` + `@everybenefits/shared` ports (ADR-014 in pulse-web). Prefer the SDK over ad-hoc callable wrappers for that slice.
 
 ## Commits and language
 

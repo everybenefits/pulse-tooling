@@ -16,4 +16,5 @@ Use this when creating or migrating an Every Benefits / Pulse repo.
 9. [ ] Enable secret scanning (GitHub default + optional [templates/secret-scanning.md](templates/secret-scanning.md))
 10. [ ] Dependabot or Renovate for the primary ecosystem
 11. [ ] Confirm no `file:` or cross-repo `workspace:` in committed `package.json` / `pubspec.yaml` path deps to siblings
-12. [ ] First green CI on `main`
+12. [ ] **TypeScript product apps:** depend on `@everybenefits/client` for User/Org/Roles (and later migrated verticals); do not wire those Gen2 callables ad hoc — see ADR-014 in pulse-web
+13. [ ] First green CI on `main`
